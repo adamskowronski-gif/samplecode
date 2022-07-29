@@ -1,10 +1,12 @@
 //This is a selection of codes from my current project, “How to Kill Monster: The Cabin” a short repeatable game that is a prequel to a Dark Rift Horror film https://darkrifthorror.com/ that is to be released by the end of 2022. 
 It is a top-down shooter in procedurally generated rooms. Where each boss has a different gaming mechanic (2d Platformer chase, turn-based battle system) at the end of a set of rooms. 
 Please see a trailer for the demo: https://www.youtube.com/watch?v=EIU4vpsrK6s
-//
-//
+<br>
 The samples of codes I’ve included are:
-//
+<br>
+<br>
+<br>
+<br>
 Enemy Code -
 The enemy code and combat features for 5 types of enemies 
 
