@@ -1,1 +1,180 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+
+public enum EnemyState
+{
+    Idle,
+
+    Follow,
+
+    Die,
+
+    stagger,
+
+    Attack,
+
+    Spawn
+
+}
+public class EnemyBaseCode : MonoBehaviour
+{
+    [Header("State Machine")]
+    public EnemyState currentState;
+
+    [Header("Key Components")]
+    public Animator anim;
+    public Rigidbody2D myRigidbody;
+
+    [Header("Enemey Stats")]
+    public float health;
+    public string enemyName;
+    //Can be killed
+    public bool playerKillable;
+
+    [Header("Death Effect")]
+    public GameObject deathEffect;
+    public Loottable thisloot;
+    public audioloot thisaudio;
+    public Signal death;
+    public EnemycounterScriptable enemybodycount;
+    public bool dead = false;
+
+    [Header("Enemy Hit Objects")]
+    public GameObject bloodspirt;
+    public GameObject bloodspirt2;
+    public GameObject bloodspirt3;
+
+    [Header("Enemy Audio")]
+    public AudioSource audioHit1;
+    public AudioSource audioHit2;
+    public AudioSource audioHit3;
+    public GameObject deathaudio;
+
+    //Enemy's cycle, chnages after being hit
+    private int enemyhitcycle = 1;
+ 
+
+
+    public virtual void Start()
+    {
+        myRigidbody = GetComponent<Rigidbody2D>();
+        anim = this.gameObject.GetComponent<Animator>();
+    }
+
+    public virtual void TakeDamage(float damage)
+    {
+        // health total is - the damage
+        health -= damage;
+
+        //if health is less or = to 0 do death effect
+        if (health <= 0 && dead == false)
+        {
+            //on enemy death
+            DeathEffect();
+            Instantiate(deathaudio, transform.position, Quaternion.identity);
+            dead = true;
+        }
+    }
+
+    public void Knock(Rigidbody2D myRidgidbody, float knockTime, float damage)
+    {
+        //if can be killed by player
+        if (playerKillable == true)
+        {
+            // take damage
+            TakeDamage(damage);
+           //if not dead after damage run hit cycle
+            if (dead == false)
+            {
+                StartCoroutine(KnockCo(myRidgidbody, knockTime));
+                StartCoroutine(bloodhit());   
+            }           
+        }
+    }
+
+    IEnumerator bloodhit()
+    {
+        if (enemyhitcycle == 1)
+        {
+            audioHit1.Play(0);
+            bloodspirt.SetActive(true);
+            yield return new WaitForSeconds(.5f);
+            bloodspirt.SetActive(false);
+            enemyhitcycle = 2;
+        }
+
+        else if (enemyhitcycle == 2)
+        {
+            audioHit2.Play(0);
+            bloodspirt2.SetActive(true);
+            yield return new WaitForSeconds(.5f);
+            bloodspirt2.SetActive(false);
+            enemyhitcycle = 3;
+        }
+
+        else if (enemyhitcycle == 3)
+        {
+            audioHit3.Play(0);
+            bloodspirt3.SetActive(true);
+            yield return new WaitForSeconds(.5f);
+            bloodspirt2.SetActive(false);
+            enemyhitcycle = 1;
+        }
+    }
+
+    public virtual IEnumerator KnockCo(Rigidbody2D myRidgidbody, float knockTime)
+    {
+          if (myRidgidbody != null)
+            {
+                //current state set to stagger in knockback script
+                anim.SetBool("walking", false);
+                anim.SetBool("hit", true);
+                yield return new WaitForSeconds(knockTime);
+                myRidgidbody.velocity = Vector2.zero;
+                currentState = EnemyState.Idle;
+                myRidgidbody.velocity = Vector2.zero;
+                anim.SetBool("walking", true);
+                anim.SetBool("hit", false);
+
+            }
+            else if (myRidgidbody == null)
+            {
+
+            }
+    }
+   
+    //Death Effect
+    public void DeathEffect()
+    {
+        this.gameObject.SetActive(false);
+        MakeLoot();
+        //if death effect is not not active
+        if (deathEffect != null)
+        { 
+            GameObject effect = Instantiate(deathEffect, transform.position, Quaternion.identity);
+            enemybodycount.bodyCount++;
+            death.Raise();
+        }
+    }
+
+    private void MakeLoot()
+    {
+
+        //if a loot table exists
+        if (thisloot != null)
+        {//connects to loot table which says what the loot should be
+            PowerUp current = thisloot.LootsPowerup();
+            
+            if (current != null)
+            {
+                // Instantiate means it makes a clone of the object (coin or heart) for the
+                // Enemey to drop. (quaternion means no rotaion on the object)
+                Instantiate(current.gameObject, transform.position, Quaternion.identity);
+               
+            }
+        }
+    }
+}
 
