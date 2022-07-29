@@ -1,0 +1,36 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class PlayerBulletSpawn : MonoBehaviour
+{
+    [Header("Bullet Spawn Points")]
+    public GameObject leftbulletspawn;
+    public GameObject leftbulletspawn1;
+    public GameObject leftbulletspawn2;
+    public GameObject rightbulletspawn;
+    public GameObject rightbulletspawn1;
+    public GameObject rightbulletspawn2;
+    public GameObject upbulletspawn;
+    public GameObject upbulletspawn1;
+    public GameObject upbulletspawn2;
+    public GameObject downbulletspawn;
+    public GameObject downbulletspawn1;
+    public GameObject downbulletspawn2;
+    public GameObject DleftUpbulletspawn;
+    public GameObject DLeftDownbulletspawn;
+    public GameObject DRightUpbulletspawn;
+    public GameObject DRightDownbulletspawn;
+ 
+    // Start is called before the first frame update
+    void Start()
+    {
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
+}
