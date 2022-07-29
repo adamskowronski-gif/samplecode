@@ -1,0 +1,311 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace Pathfinding
+{
+    public class zombieEnemyMovement : EnemyBaseCode
+
+    {
+        public FloatValue currentHealth;
+
+        [Header("Enemey Targeting")]
+        public GameObject targetobject;
+        public Transform target;
+        public float chaseRadius;
+        public float attackRadius;
+
+        [Header("A*Pathfinder")]
+        public AIPath path;
+        public AIDestinationSetter aiset;
+
+        [Header("Knockback Positions")]
+        public GameObject pointUp;
+        public GameObject pointLeft;
+        public GameObject pointRight;
+        public GameObject pointDown;
+       
+        //Knockback Transforms
+        private Transform leftTransform;
+        private Transform rightTransform;
+        private Transform upTransform;
+        private Transform downTransform;
+        //Knockback Speed and range reset
+        private float maxspeedset;
+        private float attackrangeSet;
+
+        public void Awake()
+        {
+            //Set opening state to spawn
+            currentState = EnemyState.Spawn;
+            anim.SetBool("spawn", true);
+       
+        }
+
+        public new virtual void Start()
+        {
+            
+            StartCoroutine(spawnco());
+            anim = GetComponent<Animator>();
+            myRigidbody = GetComponent<Rigidbody2D>();
+            target = null;
+            targetobject = null;
+            target = GameObject.FindWithTag("PlayerCenter").transform;
+            targetobject = GameObject.FindWithTag("PlayerCenter");
+            maxspeedset = path.maxSpeed;
+            attackrangeSet = attackRadius;
+        }
+
+        public virtual void Update()
+        {
+           
+                if (currentHealth.RuntimeValue > 0)
+                {
+                    target = GameObject.FindWithTag("PlayerCenter").transform;
+                    targetobject = GameObject.FindWithTag("PlayerCenter");
+                }
+                else if (currentHealth.RuntimeValue <= 0)
+                {
+                    target = GameObject.FindWithTag("no target").transform;
+                    targetobject = GameObject.FindWithTag("no target");
+                }
+
+            leftTransform = pointLeft.transform;
+            rightTransform = pointRight.transform;
+            downTransform = pointDown.transform;
+            upTransform = pointUp.transform;
+        }
+
+        public virtual void FixedUpdate()
+        {
+
+            Invoke("CheckDistance", .1f);
+
+
+        }
+
+        public virtual void CheckDistance()
+        {
+            //if enemy health greater than 0
+            if (currentHealth.RuntimeValue > 0)
+            {
+                //if in stagger state
+                if (currentState == EnemyState.stagger)
+                {
+
+                    anim.SetBool("walking", false);
+                    anim.SetBool("attacking", false);
+                }
+               
+                // if not in stagger state
+                else if (currentState != EnemyState.stagger)
+                {
+                
+                if (currentState == EnemyState.Follow || currentState == EnemyState.Idle &&
+                    currentState != EnemyState.stagger)
+                    {
+                        // if within chase range but outside of attack range
+                        if (Vector3.Distance(target.position,
+                            transform.position) <= chaseRadius
+                            && Vector3.Distance(target.position,
+                            transform.position) > attackRadius)
+                        {
+                            
+                                Vector3 temp = path.destination;
+                                changeAnim(temp - transform.position);
+                                myRigidbody.MovePosition(temp);
+
+                                ChangeState(EnemyState.Follow);
+                                anim.SetBool("walking", true);
+                                anim.SetBool("attacking", false);
+
+                        }
+                        //if outside chase range and attack range
+                        else if (Vector3.Distance(target.position,
+                            transform.position) > chaseRadius || Vector3.Distance(target.position,
+                            transform.position) > attackRadius && currentState != EnemyState.stagger)
+                        {
+                            ChangeState(EnemyState.Idle);
+                            anim.SetBool("walking", false);
+                            anim.SetBool("attacking", false);
+                
+                        }
+                        //if inside attack and chase range
+                        else if (Vector3.Distance(target.position,
+                            transform.position) <= chaseRadius || Vector3.Distance(target.position,
+                            transform.position) <= attackRadius && currentState != EnemyState.stagger)
+                        {
+                            Vector3 temp = path.destination;
+                            changeAnim(temp - transform.position);
+                            myRigidbody.MovePosition(temp);
+                            StartCoroutine(AttackCo());
+                        }
+
+
+                    }
+                }
+            }
+            // If enenmy is dead
+            else if (currentHealth.RuntimeValue <= 0)
+            {
+                currentState = EnemyState.Idle;
+                anim.SetBool("walking", false);
+                anim.SetBool("attacking", false);
+                anim.SetBool("hit", false);
+                // enemyWalkInstance.setParameterByName("Dead", 1)
+            }
+        }
+
+
+        IEnumerator spawnco()
+        {
+            yield return new WaitForSeconds(3f);
+            anim.SetBool("spawn", false);
+            yield return new WaitForSeconds(2f);
+            path.canMove = true;
+            yield return new WaitForSeconds(.1f);
+            currentState = EnemyState.Idle;
+
+        }
+
+        public IEnumerator AttackCo()
+        {
+
+            {
+                if (anim.GetBool("hit"))
+                {
+
+                }
+
+                else if (anim != anim.GetBool("hit"))
+                {
+                    ChangeState(EnemyState.Attack);
+                    anim.SetBool("walking", false);
+                    anim.SetBool("attacking", true);
+                    yield return new WaitForSeconds(1f);
+                    currentState = EnemyState.Follow;
+                    anim.SetBool("attacking", false);
+                }
+            }
+
+
+        }
+        private void SetAnimFloat(Vector2 setVector)
+        {
+            anim.SetFloat("moveX", setVector.x);
+            anim.SetFloat("moveY", setVector.y);
+        }
+        public void changeAnim(Vector2 direction)
+        {
+            if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
+            {
+                if (direction.x > 0)
+                {
+                    SetAnimFloat(Vector2.right);
+
+                }
+                else if (direction.x < 0)
+                {
+                    SetAnimFloat(Vector2.left);
+
+                }
+
+            }
+            else if (Mathf.Abs(direction.x) < Mathf.Abs(direction.y))
+            {
+                if (direction.y > 0)
+                {
+                    SetAnimFloat(Vector2.up);
+
+                }
+                else if (direction.y < 0)
+                {
+                    SetAnimFloat(Vector2.down);
+
+                }
+            }
+
+
+        }
+
+        public void ChangeState(EnemyState newState)
+        {
+            if (currentState != newState)
+            {
+                currentState = newState;
+            }
+        }
+
+        public override IEnumerator KnockCo(Rigidbody2D myRidgidbody, float knockTime)
+        {    // if ridgid boy is not equal to null
+
+            if (myRidgidbody != null)
+            {
+               
+                    currentState = EnemyState.stagger;
+                    attackRadius = 0;
+                    aiset.stop = true;
+                    path.reachedEndOfPath = true;
+                    if (anim.GetFloat("moveX") > 0)
+                    {
+                        path.destination = pointLeft.transform.position;
+                        aiset.target = leftTransform;
+                        SetAnimFloat(Vector2.right);
+                    }
+                    else if (anim.GetFloat("moveX") < 0)
+                    {
+                        path.destination = pointRight.transform.position;
+                        aiset.target = rightTransform;
+                        SetAnimFloat(Vector2.left);
+                    }
+                    else if (anim.GetFloat("moveY") > 0)
+                    {
+                        path.destination = pointDown.transform.position;
+                        aiset.target = downTransform;
+                        SetAnimFloat(Vector2.up);
+                    }
+                    else if (anim.GetFloat("moveY") < 0)
+                    {
+                        path.destination = pointUp.transform.position;
+                        aiset.target = upTransform;
+                        SetAnimFloat(Vector2.down);
+                    }
+
+                    path.maxSpeed = 20;
+                    aiset.target = null;
+                    anim.SetBool("attacking", false);
+                    anim.SetBool("walking", false);
+                    anim.SetBool("hit", true);
+                    //wait knockTime to run the loop again
+                    yield return new WaitForSeconds(knockTime);
+                    //GameObject obj = Instantiate(enenmyhit, this.gameObject.transform.position, Quaternion.identity) as GameObject;
+
+                    //set rigidbody velocity to 0
+                    myRidgidbody.velocity = Vector2.zero;
+                    //enemystate set to idol
+
+                    //set rigidbody velocity to 0
+                    myRidgidbody.velocity = Vector2.zero;
+                    anim.SetBool("walking", true);
+                    anim.SetBool("hit", false);
+                    path.reachedEndOfPath = false;
+                    path.destination = target.transform.position;
+                    aiset.stop = false;
+                    yield return new WaitForSeconds(0.1f);
+                    path.maxSpeed = maxspeedset;
+                    currentState = EnemyState.Idle;
+                    attackRadius = attackrangeSet;
+                
+             
+                }     
+                    else if (myRidgidbody == null)
+                    {
+             
+                    }
+
+
+            }
+        }
+    }
+
+
