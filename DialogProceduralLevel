@@ -1,0 +1,103 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using TMPro;
+
+public class DialogProcedurlLevel : MonoBehaviour
+{
+    public EnemyRoomCounter counter;
+
+    public GameObject dialogBox;
+    public float opentimebox;
+    public GameObject button;
+    public float openTimeButton;
+
+    public bool open;
+
+    public TextMeshProUGUI dialogText;
+
+    public bool dialogActive;
+
+    public string[] dialogLines;
+
+    public int currentLine;
+  
+
+    public PlayerMovement player;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        player = FindObjectOfType<PlayerMovement>();
+
+        if (counter.enemiesLeft == 0 && open == false)
+        {
+            Invoke("OpenDialog", opentimebox);
+            Invoke("openbutton", openTimeButton);
+            player.speed = 0;
+
+        }
+
+            dialogText.text = dialogLines[currentLine];
+            if (dialogBox.activeInHierarchy == true)
+
+            {
+                dialogActive = true;
+ 
+            }
+
+            else if (dialogActive == false)
+
+            {
+
+            }
+
+    }
+
+
+    public void buttonPress()
+    {
+
+        dialogText.text = dialogLines[currentLine];
+
+        if (currentLine < dialogLines.Length)
+        {
+            open = true;
+            currentLine++;
+            
+        }
+        if (currentLine >= dialogLines.Length)
+        {
+
+            dialogBox.SetActive(false);
+            dialogActive = false;
+
+            currentLine = 0;
+            
+            player.speed = 6;
+        }
+
+
+        else { }
+
+    }
+
+
+    public void OpenDialog()
+    {
+        dialogBox.SetActive(true);
+        open = true;
+    }
+
+    void openbutton()
+    {
+        button.SetActive(true);
+    }
+
+}
