@@ -1,0 +1,31 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class inventoyUI : MonoBehaviour
+{
+    public Inventory playerInventory;
+    public Text coinDisplay;
+    public Text keyDisplay;
+    public Text bombDisplay;
+
+
+    private void Start()
+    {
+        coinDisplay.text = "" + playerInventory.coins;
+        keyDisplay.text = "" + playerInventory.doorkey;
+        bombDisplay.text = "" + playerInventory.bomb;
+    }
+
+
+    public void UpdateCoinCount()
+    {
+        coinDisplay.text = "" + playerInventory.coins;
+        keyDisplay.text = "" + playerInventory.doorkey;
+        bombDisplay.text = "" + playerInventory.bomb;
+    }
+
+}
+
+
