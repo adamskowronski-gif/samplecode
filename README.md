@@ -2,9 +2,10 @@
 It is a top-down shooter in procedurally generated rooms. Where each boss has a different gaming mechanic (2d Platformer chase, turn-based battle system) at the end of a set of rooms. 
 Please see a trailer for the demo: https://www.youtube.com/watch?v=EIU4vpsrK6s
 <br>
+<br>
 The samples of codes I’ve included are:
 <br>
-<br>
+
 Enemy Code -
 The enemy code and combat features for 5 types of enemies 
 
@@ -91,10 +92,11 @@ ArmourManger, manages the players armour system and UI
 HeartManger, Manages the players health system and UI
 
 FloatValue, scriptable serialization to manage armour and health system  
-
+<br>
 <br>
 <br>
 Procedurally generated room code -
+<br>
 Door, controls the locking and opening of the doors when a player enters a room
 
 Door Collider, manages the door colliders so that players can not walk through unspawned doors in the procedurally generated level 
