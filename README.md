@@ -5,8 +5,6 @@ Please see a trailer for the demo: https://www.youtube.com/watch?v=EIU4vpsrK6s
 The samples of codes I’ve included are:
 <br>
 <br>
-<br>
-<br>
 Enemy Code -
 The enemy code and combat features for 5 types of enemies 
 
@@ -21,8 +19,8 @@ EnemyShoot which is the shooting enemies.
 EnemyBullet, which controls the shooting enemies bullets
 
 EnemyBurry which is an enemy that digs underground, moves to a different location, pops up and then shoots in 8 directions. Then repeats.
-//
-//
+<br>
+<br>
 Event System and Dialog –
 This is a set of codes that control UI, the event system and Dialog
 
@@ -35,8 +33,8 @@ FullUIReset, Health and Inventory reset.
 TitleLevelSelect, lets players enter a code that they receive when they die to start back at a level again
 
 inventoryUI, controls the test for the coin, key bomb UI text.
-//
-//
+<br>
+<br>
 Loot –
 BombPickUp, lets players pick up bomb items to be used to drop and blow up objects
 
@@ -47,17 +45,15 @@ KeyPickUp, lets the player pick up a key to unlock the level door.
 Loottable, controls the enemy loot drop system.
 
 powerupSignal, signal for loot items.
-
-//
-//
+<br>
+<br>
 Player Code/ Inventory / Inventory Items -
 
 Inventory, the inventory manager.
 
 ItemPlayer, item information scriptable object.
-
-//
-//
+<br>
+<br>
 Player Code/ Inventory / Player Weapon Inventory –
 GunPickUp, code for picking up a new gun.
 
@@ -67,7 +63,8 @@ PlayerWeaponGunItem weapon item information scriptable object.
 
 PlayerWeaponInventory weapon inventory manager.
 
-
+<br>
+<br>
 Player Code/ Player Movement codes – 
 Bomb, bomb explosion mechanics when bomb has been dropped
 
@@ -81,13 +78,13 @@ PlayerMovement, top-down 2d player movement, combat and health.
 
 PlayerShooting, script for the player shooting mechanic.
 
-//
-//
+<br>
+<br>
 Player Code/ Player Spawner -  
 PlayerPrefabChange, mangers the spawn of the player prefab at the start of the level or if a weapon item is picked up.  
 
-//
-//
+<br>
+<br>
 Player Code/ PlayerHealth –
 ArmourManger, manages the players armour system and UI
 
@@ -95,8 +92,8 @@ HeartManger, Manages the players health system and UI
 
 FloatValue, scriptable serialization to manage armour and health system  
 
-//
-//
+<br>
+<br>
 Procedurally generated room code -
 Door, controls the locking and opening of the doors when a player enters a room
 
