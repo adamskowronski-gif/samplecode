@@ -1,0 +1,64 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace Pathfinding
+{
+    public class EnemyShoot : zombieEnemyMovement
+    {
+        public GameObject bullet;
+        public float fireDelay;
+        public float fireDelaySeconds;
+        public bool canFire = true;
+
+        public override void Update()
+        {
+
+
+            if (currentHealth.RuntimeValue > 0)
+            {
+                target = GameObject.FindWithTag("PlayerCenter").transform;
+                targetobject = GameObject.FindWithTag("PlayerCenter");
+                fireDelaySeconds -= Time.deltaTime;
+
+                if (fireDelaySeconds <= 0)
+                {
+                    canFire = true;
+                    fireDelaySeconds = fireDelay;
+                }
+            }
+            else if (currentHealth.RuntimeValue <= 0)
+            {
+                target = GameObject.FindWithTag("no target").transform;
+                targetobject = GameObject.FindWithTag("no target");
+            }
+
+       
+            Invoke("CheckAttack", .1f);
+        }
+
+        void CheckAttack()
+        {
+            if (currentState == EnemyState.Idle || currentState == EnemyState.Follow || currentState == EnemyState.Attack
+                    && currentState != EnemyState.stagger)
+            {
+
+
+                if (canFire)
+                {
+                    Vector3 temp2 = target.transform.position - transform.position;
+                    GameObject current = Instantiate(bullet, transform.position, Quaternion.identity);
+                    current.GetComponent<EnemyBullet>().Launch(temp2);
+
+                    canFire = false;
+                    changeAnim(temp2 - transform.position);
+
+
+                    ChangeState(EnemyState.Follow);
+                    anim.SetBool("walking", true);
+                    anim.SetBool("attacking", false);
+                }
+            }
+        }
+    }
+}
