@@ -1,0 +1,49 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Unit : MonoBehaviour
+{
+    public string unitname;
+    public int unitLevel;
+    public int damage;
+    public int damageSpecial;
+    public int maxHP;
+    public int currentHP;
+    public int healItem;
+    public string description;
+
+    public Animator anim;
+
+    public GameObject specialAnimation;
+    public GameObject specialAnimationSpawn;
+
+    public GameObject attackAnimation;
+    public GameObject attackAnimationSpawn;
+
+    public AudioSource attack1SOund;
+    public AudioSource attack2SOund;
+    public AudioSource deathSound;
+    public AudioSource healsound;
+    public AudioSource coinsound;
+    public AudioSource nocoinsound;
+
+
+    public bool TakeDamage(int dmg)
+    {
+        currentHP -= dmg;
+
+        if (currentHP <= 0)
+            return true;
+        else
+            return false;
+
+    }
+
+    public void heal(int amount)
+    {
+        currentHP += amount;
+        if (currentHP > maxHP)
+            currentHP = maxHP;
+    }
+}
