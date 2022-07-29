@@ -1,4 +1,4 @@
-//This is a selection of codes from my current project, “How to Kill Monster: The Cabin” a short repeatable game that is a prequel to a Dark Rift Horror film https://darkrifthorror.com/ that is to be released by the end of 2022. 
+This is a selection of codes from my current project, “How to Kill Monster: The Cabin” a short repeatable game that is a prequel to a Dark Rift Horror film that is to be released by the end of 2022. 
 It is a top-down shooter in procedurally generated rooms. Where each boss has a different gaming mechanic (2d Platformer chase, turn-based battle system) at the end of a set of rooms. 
 Please see a trailer for the demo: https://www.youtube.com/watch?v=EIU4vpsrK6s
 <br>
@@ -12,15 +12,15 @@ The enemy code and combat features for 5 types of enemies
 
 EnemyBaseCode, the base code for all the enemies.
 
-zombieEnemyMovement for the basic combat enemies.
+zombieEnemyMovement basic melee enemy movement and combat.
 
-ZombieReproduce is zombie enemies that spawn smaller enemies on death.
+ZombieReproduce zombie enemies that spawns smaller enemies on death.
 
-EnemyShoot which is the shooting enemies.
+EnemyShoot the shooting enemies.
 
-EnemyBullet, which controls the shooting enemies bullets
+EnemyBullet, controls the EnemyShoot bullets.
 
-EnemyBurry which is an enemy that digs underground, moves to a different location, pops up and then shoots in 8 directions. Then repeats.
+EnemyBurry enemy that digs underground, moves to a different location, pops up and shoots in 8 directions. Then repeats.
 <br>
 <br>
 <br>
@@ -34,9 +34,9 @@ EventSystemController, managing all UI button systems.
 
 FullUIReset, Health and Inventory reset.
 
-TitleLevelSelect, lets players enter a code that they receive when they die to start back at a level again
+TitleLevelSelect, lets players enter a code that they receive when they die to load in a level from start menu.
 
-inventoryUI, controls the test for the coin, key bomb UI text.
+inventoyUI, controls the text for the coin, key bomb UI text.
 <br>
 <br>
 <br>
@@ -68,7 +68,9 @@ GunPickUp, code for picking up a new gun.
 
 MeleePickUp, Code for picking up a new melee weapon.
 
-PlayerWeaponGunItem weapon item information scriptable object. 
+PlayerWeaponGunItem Gun weapon item information scriptable object. 
+
+PlayerWeaponMeleeItem Melee weapon item information scriptable object. 
 
 PlayerWeaponInventory weapon inventory manager.
 <br>
@@ -98,9 +100,9 @@ PlayerPrefabChange, mangers the spawn of the player prefab at the start of the l
 <br>
 Player Code/ PlayerHealth –
 <br>
-ArmourManger, manages the players armour system and UI
+ArmourManager, manages the players armour system and UI
 
-HeartManger, Manages the players health system and UI
+HeartManager, Manages the players health system and UI
 
 FloatValue, scriptable serialization to manage armour and health system  
 <br>
@@ -110,7 +112,7 @@ Procedurally generated room code -
 <br>
 Door, controls the locking and opening of the doors when a player enters a room
 
-Door Collider, manages the door colliders so that players can not walk through unspawned doors in the procedurally generated level 
+DoorCollider, manages the door colliders so that players can not walk through unspawned doors in the procedurally generated level 
 
 DungeonCralwer, set position of room spawn
 
@@ -120,6 +122,27 @@ DungeonGenerator – spawns dungeon scenes into master scene
 
 DungeonGeneratorData – scriptable object, set amount of random rooms spawn
 
-RoomController controls which rooms spawn and how many room type
+RoomController controls which rooms spawn and how many of each room type
 
 Room, room info, controls door spawning, and triggers enemy spawning
+
+<br>
+<br>
+<br>
+
+Turnbased Combat
+<br>
+BattleHud, controls UI for Enemy and player in turn-based combat
+
+BattleSytem, controls turn system for enemy and Player
+
+Unit, contains data for Enemy unit and Player in turn based battler
+
+
+
+
+
+
+ 
+
+
