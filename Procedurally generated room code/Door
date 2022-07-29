@@ -1,0 +1,88 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Door : MonoBehaviour
+{
+
+    public enum DoorType
+
+    {
+        left,right,up,down
+
+    }
+
+    public DoorType doortype;
+
+    public GameObject player;
+
+    public Animator animator;
+
+    public Room room;
+
+    public int doorcount;
+
+    public AudioSource dooraudio;
+    private float widthOffSet = 1.75f;
+
+    public bool locked;
+    private void Start()
+    {
+        player = GameObject.FindGameObjectWithTag("Player");
+        animator = GetComponent<Animator>();
+
+        room = GetComponentInParent<Room>();
+    }
+
+    public void Update()
+    {
+        
+
+        if (room.doorLocked == true && locked == false)
+        {
+            animator.SetBool("locked", true);
+           if (doorcount == 0)
+            {
+
+            }
+           else if (doorcount >0)
+            {
+                dooraudio.Play(0);
+            }
+            
+            locked = true;
+            doorcount = 1;
+           // collider.enabled = true;
+        }
+
+        else if (room.doorLocked == false && locked == true)
+        {
+            animator.SetBool("locked", false);
+            dooraudio.Play(0);
+            locked = false;
+           // collider.enabled = false;
+        }
+    }
+    public void OnTriggerEnter2D(Collider2D other)
+    {
+      if(other.tag =="Player")
+        {
+            switch(doortype)
+            {
+                case DoorType.down:
+                    player.transform.position = new Vector2(transform.position.x, transform.position.y - widthOffSet);
+                        break;
+                case DoorType.up:
+                    player.transform.position = new Vector2(transform.position.x, transform.position.y + widthOffSet);
+                    break;
+                case DoorType.left:
+                    player.transform.position = new Vector2(transform.position.x - widthOffSet, transform.position.y);
+                    break;
+                case DoorType.right:
+                    player.transform.position = new Vector2(transform.position.x -+widthOffSet, transform.position.y - widthOffSet);
+                    break;
+            }
+
+        }
+    }
+}
