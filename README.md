@@ -5,7 +5,7 @@ Please see a trailer for the demo: https://www.youtube.com/watch?v=EIU4vpsrK6s
 <br>
 The samples of codes I’ve included are:
 <br>
-
+<br>
 Enemy Code -
 The enemy code and combat features for 5 types of enemies 
 
