@@ -1,19 +1,10 @@
 //This is a selection of codes from my current project, “How to Kill Monster: The Cabin” a short repeatable game that is a prequel to a Dark Rift Horror film https://darkrifthorror.com/ that is to be released by the end of 2022. 
 It is a top-down shooter in procedurally generated rooms. Where each boss has a different gaming mechanic (2d Platformer chase, turn-based battle system) at the end of a set of rooms. 
 Please see a trailer for the demo: https://www.youtube.com/watch?v=EIU4vpsrK6s
-
+//
+//
 The samples of codes I’ve included are:
-
-
-
-
-
-
-
-
-
-
-
+//
 Enemy Code -
 The enemy code and combat features for 5 types of enemies 
 
@@ -28,7 +19,8 @@ EnemyShoot which is the shooting enemies.
 EnemyBullet, which controls the shooting enemies bullets
 
 EnemyBurry which is an enemy that digs underground, moves to a different location, pops up and then shoots in 8 directions. Then repeats.
-
+//
+//
 Event System and Dialog –
 This is a set of codes that control UI, the event system and Dialog
 
@@ -41,8 +33,8 @@ FullUIReset, Health and Inventory reset.
 TitleLevelSelect, lets players enter a code that they receive when they die to start back at a level again
 
 inventoryUI, controls the test for the coin, key bomb UI text.
-
-
+//
+//
 Loot –
 BombPickUp, lets players pick up bomb items to be used to drop and blow up objects
 
@@ -54,14 +46,16 @@ Loottable, controls the enemy loot drop system.
 
 powerupSignal, signal for loot items.
 
-
+//
+//
 Player Code/ Inventory / Inventory Items -
 
 Inventory, the inventory manager.
 
 ItemPlayer, item information scriptable object.
 
-
+//
+//
 Player Code/ Inventory / Player Weapon Inventory –
 GunPickUp, code for picking up a new gun.
 
@@ -85,11 +79,13 @@ PlayerMovement, top-down 2d player movement, combat and health.
 
 PlayerShooting, script for the player shooting mechanic.
 
-
+//
+//
 Player Code/ Player Spawner -  
 PlayerPrefabChange, mangers the spawn of the player prefab at the start of the level or if a weapon item is picked up.  
 
-
+//
+//
 Player Code/ PlayerHealth –
 ArmourManger, manages the players armour system and UI
 
@@ -97,7 +93,8 @@ HeartManger, Manages the players health system and UI
 
 FloatValue, scriptable serialization to manage armour and health system  
 
-
+//
+//
 Procedurally generated room code -
 Door, controls the locking and opening of the doors when a player enters a room
 
