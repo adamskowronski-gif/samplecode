@@ -1,0 +1,171 @@
+//Player Spawning system for procedurally generated levels
+
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+public class PlayerPrefabChange : MonoBehaviour
+{
+
+    [Header ("Weapons Settings")]
+    public PlayerWeaponInventory weapon;
+    public PlayerWeaponMeleeItem baseballbat;
+    public PlayerWeaponGunItem noGun;
+    public Signal weaponsignal;
+
+    [Header ("Player Object")]
+    public GameObject player;
+    public GameObject newplayer;
+
+    [Header("Player Transform")]
+    private Vector3 playpos;
+    private Vector3 playerDirection;
+    private Quaternion playerrot;
+
+
+    public EnemycounterScriptable enemycount;
+
+    [Header("Spawn")]
+    private Vector3 spawnpos;
+    private Transform startspawn;
+    public GameObject spawnPrefab;
+
+    [Header("Health")]
+    public GameObject defaultprefab;
+    public FloatValue currentHealth;
+
+    void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name == "BasementOneLevel" || scene.name == "BasementTwoLevel" || scene.name == "SewerLevel"
+            || scene.name == "Outside" || scene.name == "Cabin1" || scene.name == "Cabin2" || scene.name == "Shed" || scene.name == "Cabin3" || scene.name == "test" || scene.name == "PoliceProOne"
+            || scene.name == "PoliceProTwo" || scene.name == "PoliceProThree" || scene.name == "PoliceProFour" )
+        {
+            if (GameObject.FindWithTag("Player") == null)
+            {
+                weapon.defaultprefab = true;
+                weapon.currentPrefab = weapon.BaseballPrefab;
+                weapon.currentMelee = baseballbat;
+                weapon.currentGun = noGun;
+                enemycount.bodyCount = 0;
+                {
+                    if (weapon.defaultprefab == true)
+                    {
+                        weapon.gunweapon = true;
+
+                        weapon.gurrentRifle = false;
+                        weapon.Shotgun = true;
+                        weapon.RockettGun = false;
+
+                        weapon.sword = false;
+                        weapon.DemonArm = false;
+                        weapon.baseballBat = true;
+
+
+                        weaponsignal.Raise();
+                        spawnPrefab = defaultprefab;
+                        player = defaultprefab;
+                        startspawn = this.gameObject.transform;
+                        GameObject obj = Instantiate(spawnPrefab, startspawn.transform.position, Quaternion.identity) as GameObject;
+                        obj.transform.parent = transform;
+                        //GameObject obj = Instantiate(player, spawnpos, playerrot) as GameObject;
+                        //obj.transform.parent = transform;
+                        //newplayer = Instantiate(newplayer, transform.position, Quaternion.identity, transform.parent)
+                    }
+                    else
+                    {
+
+
+                        startspawn = this.gameObject.transform;
+                        GameObject obj = Instantiate(weapon.currentPrefab, startspawn.transform.position, Quaternion.identity) as GameObject;
+                        obj.transform.parent = transform;
+                        //GameObject obj = Instantiate(player, spawnpos, playerrot) as GameObject;
+                        //obj.transform.parent = transform;
+                        //newplayer = Instantiate(newplayer, transform.position, Quaternion.identity, transform.parent)
+                    }
+                }
+
+            }
+            else
+            {
+                if (weapon.defaultprefab == true)
+                {
+
+                    spawnPrefab = defaultprefab;
+                    player = defaultprefab;
+                    startspawn = this.gameObject.transform;
+                    GameObject obj = Instantiate(spawnPrefab, startspawn.transform.position, Quaternion.identity) as GameObject;
+                    obj.transform.parent = transform;
+                    //GameObject obj = Instantiate(player, spawnpos, playerrot) as GameObject;
+                    //obj.transform.parent = transform;
+                    //newplayer = Instantiate(newplayer, transform.position, Quaternion.identity, transform.parent)
+                }
+                else
+                {
+
+
+                    startspawn = this.gameObject.transform;
+                    GameObject obj = Instantiate(weapon.currentPrefab, startspawn.transform.position, Quaternion.identity) as GameObject;
+                    obj.transform.parent = transform;
+                    //GameObject obj = Instantiate(player, spawnpos, playerrot) as GameObject;
+                    //obj.transform.parent = transform;
+                    //newplayer = Instantiate(newplayer, transform.position, Quaternion.identity, transform.parent)
+                }
+            }
+        }
+        else
+        { }
+    }
+  public  void Update()
+
+    {
+        if (currentHealth.RuntimeValue <= 0)
+        {
+            player = GameObject.FindWithTag("no target");
+            spawnPrefab = GameObject.FindWithTag("no target");
+
+
+        }
+        else
+        {
+            player = GameObject.FindWithTag("Player");
+            playpos = player.transform.position;
+            playerrot = player.transform.rotation;
+            playerDirection = player.transform.forward;
+            spawnpos = playpos + playerDirection;
+
+            if (weapon.weaponpickup == true)
+            {
+                StartCoroutine(playerchanged());
+
+            }
+        }
+    }
+
+    private IEnumerator playerchanged()
+    {
+        newplayer = weapon.currentPrefab;
+        GameObject obj =  Instantiate(newplayer, spawnpos, playerrot) as GameObject;
+        obj.transform.parent = transform;
+        Destroy(player);
+        //newplayer = Instantiate(newplayer, transform.position, Quaternion.identity, transform.parent)
+        player = newplayer;
+        weapon.weaponpickup = false;
+        yield return null;
+    }
+
+
+
+}
+ 
