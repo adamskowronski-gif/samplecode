@@ -1,0 +1,45 @@
+//Loot Drop manager
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+[System.Serializable]
+
+public class Loot
+{
+    public PowerUp thisloot;
+    public int lootchance;
+}
+
+
+[CreateAssetMenu]
+public class Loottable : ScriptableObject
+{
+    public Loot[] loots;
+   //public EnemycounterScriptable lastEnemy;
+   // public EndLoot endloots;
+   
+    public PowerUp LootsPowerup()
+    {
+
+        //cumaltive probability of guess and original %
+        int cumProb = 0;
+        //cereates the random guess
+        int currentProb = Random.Range(0, 100);
+        for (int i = 0; i < loots.Length; i++)
+        {
+            //adds the loots number set in unity (chance %) onto of the random guess
+            cumProb += loots[i].lootchance;
+            //if current prob is = or less then cumaltive probablity
+            if (currentProb <= cumProb)
+            {
+                return loots[i].thisloot;
+            }
+
+            
+        }
+        return null;
+    }
+
+}
