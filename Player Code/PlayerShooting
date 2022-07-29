@@ -1,0 +1,109 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using Assets.HeroEditor4D.Common.CharacterScripts;
+
+
+public class PlayerShooting : MonoBehaviour
+{
+    private Animator animator;
+
+    [Header("Bullet/ Projectile")]
+
+    public GameObject Shotgunbullet;
+
+    public float bulletSpeed;
+
+    public float fireDelay;
+
+    public AudioSource bulletAudio;   
+
+    public PlayerBulletSpawn bulletspawn;
+
+    public PlayerMovement player;
+    public Inventory playerInventory;
+    public PlayerWeaponInventory weapon;
+    public float fireDelaySeconds;
+    public bool canFire = true;
+
+    void Start()
+    {
+        animator = GetComponent<Animator>();
+    }
+
+
+    void Update()
+    {
+        fireDelaySeconds -= Time.deltaTime;
+
+        if (fireDelaySeconds <= 0)
+        {
+            canFire = true;
+            fireDelaySeconds = fireDelay;
+        }
+    }
+
+    public void shooting()
+    {
+        if (weapon.gunweapon == true && canFire == true) 
+       
+                Shotgun();
+         
+        else if (weapon.gunweapon == false)
+        {
+
+        }
+    }
+    private void Shotgun()
+    {
+        if (animator.GetFloat("moveY") == 0 && (animator.GetFloat("moveX") == 1))
+        {
+            canFire = false;
+            bulletAudio.Play(0);
+            Instantiate(Shotgunbullet, bulletspawn.rightbulletspawn.transform.position, bulletspawn.rightbulletspawn.transform.rotation);
+            Instantiate(Shotgunbullet, bulletspawn.rightbulletspawn1.transform.position, bulletspawn.rightbulletspawn1.transform.rotation);
+            Instantiate(Shotgunbullet, bulletspawn.rightbulletspawn2.transform.position, bulletspawn.rightbulletspawn2.transform.rotation);
+
+        }
+
+        else if (animator.GetFloat("moveY") == -1 && (animator.GetFloat("moveX") == 0))
+        {
+            canFire = false;
+            bulletAudio.Play(0);
+            Instantiate(Shotgunbullet, bulletspawn.downbulletspawn.transform.position, bulletspawn.downbulletspawn.transform.rotation);
+            Instantiate(Shotgunbullet, bulletspawn.downbulletspawn1.transform.position, bulletspawn.downbulletspawn1.transform.rotation);
+            Instantiate(Shotgunbullet, bulletspawn.downbulletspawn2.transform.position, bulletspawn.downbulletspawn2.transform.rotation);
+
+        }
+
+       else if (animator.GetFloat("moveY") == 0 && (animator.GetFloat("moveX") == -1))
+        {
+            canFire = false;
+            bulletAudio.Play(0);
+            Instantiate(Shotgunbullet, bulletspawn.leftbulletspawn.transform.position, bulletspawn.leftbulletspawn.transform.rotation);
+            Instantiate(Shotgunbullet, bulletspawn.leftbulletspawn1.transform.position, bulletspawn.leftbulletspawn1.transform.rotation);
+            Instantiate(Shotgunbullet, bulletspawn.leftbulletspawn2.transform.position, bulletspawn.leftbulletspawn2.transform.rotation);
+
+        }
+
+      else if (animator.GetFloat("moveY") == 1 && (animator.GetFloat("moveX") == 0))
+        {
+            canFire = false;
+            bulletAudio.Play(0);
+            Instantiate(Shotgunbullet, bulletspawn.upbulletspawn.transform.position, bulletspawn.upbulletspawn.transform.rotation);
+            Instantiate(Shotgunbullet, bulletspawn.upbulletspawn1.transform.position, bulletspawn.upbulletspawn1.transform.rotation);
+            Instantiate(Shotgunbullet, bulletspawn.upbulletspawn2.transform.position, bulletspawn.upbulletspawn2.transform.rotation);
+
+        }
+        else if (animator.GetFloat("moveY") == 0 && (animator.GetFloat("moveX") == 0))
+        {
+            canFire = false;
+            bulletAudio.Play(0);
+            Instantiate(Shotgunbullet, bulletspawn.downbulletspawn.transform.position, bulletspawn.downbulletspawn.transform.rotation);
+            Instantiate(Shotgunbullet, bulletspawn.downbulletspawn1.transform.position, bulletspawn.downbulletspawn1.transform.rotation);
+            Instantiate(Shotgunbullet, bulletspawn.downbulletspawn2.transform.position, bulletspawn.downbulletspawn2.transform.rotation);
+
+        }
+       
+    }
+}
