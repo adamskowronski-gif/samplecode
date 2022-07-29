@@ -1,0 +1,190 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+[CreateAssetMenu]
+public class PlayerWeaponInventory : ScriptableObject
+{
+
+    public PlayerWeaponGunItem currentGun;
+    public List<PlayerWeaponGunItem> gun = new List<PlayerWeaponGunItem>();
+
+    public PlayerWeaponMeleeItem currentMelee;
+    public List<PlayerWeaponMeleeItem> melee = new List<PlayerWeaponMeleeItem>();
+
+    public GameObject currentPrefab;
+
+    [Header("PickUp in Progress")]
+    public bool weaponpickup;
+
+    public bool meleeweapon;
+    public bool gunweapon = false;
+
+    [Header("Gun Bools")]
+    public bool gurrentRifle;
+    public bool Shotgun;
+    public bool RockettGun;
+
+    [Header("Melee Bools")]
+    public bool baseballBat;
+    public bool sword;
+    public bool DemonArm;
+
+    public bool defaultprefab =  true;
+
+    [Header("Melee Only")]
+    public GameObject BaseballPrefab;
+    public GameObject swordPrefab;
+    public GameObject demonArmPrefab;
+
+  [Header("Gun + Baseball Bat Prefab")]
+    public GameObject gurrentBaseballPrefab;
+    public GameObject ShotgunBaseballPrefab;
+    public GameObject RockettBaseballPrefab;
+
+    [Header("Gun + Sword")]
+    public GameObject gurrentSwordPrefab;
+    public GameObject ShotgunSwordPrefab;
+    public GameObject RockettSwordPrefab;
+
+    [Header("Gun + DemonArm")]
+    public GameObject gurrentDemonArmPrefab;
+    public GameObject ShotgunDemonArmPrefab;
+    public GameObject RockettDemonArmPrefab;
+
+  
+
+    public void AddItem(PlayerWeaponGunItem gunToAdd)
+    {
+
+        //Gun and baseball
+        if (gunToAdd.gurrentRifleitem && baseballBat == true)
+        {
+            gunweapon = true;
+            gurrentRifle = true;
+            currentPrefab = gurrentBaseballPrefab;
+            Shotgun = false;
+            RockettGun = false;
+            defaultprefab = false;
+        }
+        else if (gunToAdd.Shotgunitem && baseballBat == true)
+        {
+            gunweapon = true;
+            Shotgun = true;
+            currentPrefab = ShotgunBaseballPrefab;
+            gurrentRifle = false;
+            RockettGun = false;
+            defaultprefab = false;
+        }
+        else if (gunToAdd.rocketitem && baseballBat == true)
+        {
+            gunweapon = true;
+            RockettGun = true;
+            currentPrefab = RockettBaseballPrefab;
+            gurrentRifle = false;
+            Shotgun = false;
+            defaultprefab = false;
+        }
+
+        //Gun and sword
+        else if (gunToAdd.gurrentRifleitem && sword == true)
+        {
+            gunweapon = true;
+            gurrentRifle = true;
+            currentPrefab = gurrentSwordPrefab;
+            RockettGun = false;
+            Shotgun = false;
+            defaultprefab = false;
+        }
+        else if (gunToAdd.Shotgunitem && sword == true)
+        {
+            gunweapon = true;
+            Shotgun = true;
+            currentPrefab = ShotgunSwordPrefab;
+            gurrentRifle = false;
+            RockettGun = false;
+            defaultprefab = false;
+        }
+        else if (gunToAdd.rocketitem && sword == true)
+        {
+            gunweapon = true;
+            RockettGun = true;
+            currentPrefab = RockettSwordPrefab;
+            gurrentRifle = false;
+            Shotgun = false;
+            defaultprefab = false;
+        }
+
+        //Gun and Demon Arm
+        else if (gunToAdd.gurrentRifleitem && DemonArm == true)
+        {
+            gunweapon = true;
+            gurrentRifle = true;
+            currentPrefab = gurrentDemonArmPrefab;
+            RockettGun = false;
+            Shotgun = false;
+            defaultprefab = false;
+        }
+        else if (gunToAdd.Shotgunitem && DemonArm == true)
+        {
+            gunweapon = true;
+            Shotgun = true;
+            currentPrefab = ShotgunDemonArmPrefab;
+            gurrentRifle = false;
+            RockettGun = false;
+            defaultprefab = false;
+        }
+        else if (gunToAdd.rocketitem && DemonArm == true)
+        {
+            gunweapon = true;
+            RockettGun = true;
+            currentPrefab = RockettDemonArmPrefab;
+            gurrentRifle = false;
+            Shotgun = false;
+            defaultprefab = false;
+        }
+    }
+
+    public void AddItem(PlayerWeaponMeleeItem meleeToAdd)
+    {
+        //BaseballPrefab and 
+        if (meleeToAdd.baseballBatitem && gurrentRifle == true)
+        {
+          
+            baseballBat = true;
+            currentPrefab = gurrentBaseballPrefab;
+            sword = false;
+            DemonArm = false;
+            defaultprefab = false;
+
+        }
+       else if (meleeToAdd.baseballBatitem && Shotgun == true)
+        {
+
+            baseballBat = true;
+            currentPrefab = ShotgunBaseballPrefab;
+            sword = false;
+            DemonArm = false;
+            defaultprefab = false;
+        }
+        else if (meleeToAdd.baseballBatitem && RockettGun == true)
+        {
+
+            baseballBat = true;
+            currentPrefab = RockettBaseballPrefab;
+            sword = false;
+            DemonArm = false;
+            defaultprefab = false;
+        }
+
+        else if (meleeToAdd.baseballBatitem && gunweapon == false)
+        {
+
+            baseballBat = true;
+            currentPrefab = RockettBaseballPrefab;
+            sword = false;
+            DemonArm = false;
+            defaultprefab = false;
+        }
+    }
+}
