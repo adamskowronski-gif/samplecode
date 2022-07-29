@@ -1,0 +1,32 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class BombPickUp : MonoBehaviour
+{
+   public Inventory playerInventory;
+   public ItemPlayer contents;
+    public Signal bombsignal;
+    public GameObject audioon;
+
+
+
+    //Raise the powerup signal to put the text on the coin display
+
+
+
+    public void OnTriggerEnter2D(Collider2D other)
+    {    //When Player is in the trigger and not another ridgidbody
+        if (other.CompareTag("player1") && !other.isTrigger)
+        {
+            playerInventory.currentItem = contents;
+            //when player is in the trigger add 1 coin
+            playerInventory.bomb += 1;
+            //Raise the powerup signal again
+            bombsignal.Raise();
+            //destory the coin
+            Instantiate(audioon, transform.position, Quaternion.identity);
+            Destroy(this.gameObject);
+        }
+    }
+}
