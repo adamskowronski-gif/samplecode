@@ -1,0 +1,20 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+[CreateAssetMenu]
+public class PlayerWeaponGunItem : ScriptableObject
+{
+    [Header("Item Details")]
+    public Sprite itemSprite;
+    public string itemDescription;
+
+   
+
+
+    [Header("Weapons")]
+    public bool gurrentRifleitem;
+    public bool Shotgunitem;
+    public bool rocketitem;
+    public bool noGun;
+}
