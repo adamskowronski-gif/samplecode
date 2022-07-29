@@ -1,0 +1,112 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class HeartManager : MonoBehaviour
+{
+    [Header("Heart UI")]
+    public Image[] hearts;
+    public Sprite fullheart;
+    public Sprite halffullheart;
+    public Sprite emptyheart;
+
+  
+
+
+    [Header("Heart Scriptable Objects")]
+    public FloatValue heartContainers;
+    public FloatValue PlayerCurrentHealth;
+
+
+    public Inventory inventory;
+ 
+
+    public GameObject YouAreDeadUi;
+
+    public void Awake()
+    {
+        
+            heartContainers.RuntimeValue = inventory.health;
+        
+      
+    }
+
+    public void Start()
+    {
+        PlayerCurrentHealth.RuntimeValue = heartContainers.RuntimeValue *2;
+      
+     
+        //call InitalHearts
+
+        InitalHearts();
+      
+
+    }
+
+    public void Update()
+    {
+        UpdateHearts();
+        heartContainers.RuntimeValue = PlayerCurrentHealth.RuntimeValue / 2;
+        if (PlayerCurrentHealth.RuntimeValue == 0)
+        {
+            
+            YouAreDeadUi.SetActive(true);
+        }
+    }
+
+    
+    //This is the players current health
+    public void InitalHearts()
+    {
+        //"for" is a loop. Goes throught the heart containers and sets them to full
+        //This called at the begnning of the scene or when we get a new heart container.
+       
+            for (int i = 0; i < heartContainers.RuntimeValue; i++)
+            {
+                //actives the heart object to be seen on screen
+                hearts[i].gameObject.SetActive(true);
+                //full heart sprite added
+                hearts[i].sprite = fullheart;
+            }
+       
+    }
+
+
+    //What hearts are displayed in the UI 
+    public void UpdateHearts()
+    {
+
+        InitalHearts();
+
+            // temporary health value = current health value divided by 2. because each heart counts as 2 health
+        float tempHealth = PlayerCurrentHealth.RuntimeValue / 2;
+
+            //loop over all the heart containers 
+            for (int i = 0; i < heartContainers.RuntimeValue; i++)
+            {
+                //if i is less than or = to temphealth then display a full heart
+                if (i <= tempHealth - 1)
+                {
+                    //full heart
+                    hearts[i].sprite = fullheart;
+                }
+                // if is i is more than or equal to temp health display empty heart 
+                else if (i >= tempHealth)
+                {
+                    //empty heart
+                    hearts[i].sprite = emptyheart;
+
+                }
+
+                else
+                {
+                    //halffull heart
+                    hearts[i].sprite = halffullheart;
+                }
+            }
+      
+    }
+ 
+
+}
