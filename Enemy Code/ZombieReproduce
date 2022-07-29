@@ -1,0 +1,32 @@
+//Zombie Enemy that spawns other smaller enemies on death
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace Pathfinding
+{
+    public class ZombieReproduce : zombieEnemyMovement
+    {
+
+        public GameObject enemyOne;
+
+
+        public override void TakeDamage(float damage)
+        {
+            // health total is - the damage
+            health -= damage;
+
+            //if health is less or = to 0 do death effect
+            if (health <= 0 && dead == false)
+            {
+                Instantiate(deathaudio, transform.position, Quaternion.identity);
+                Instantiate(enemyOne, transform.position, Quaternion.identity);
+                DeathEffect();
+        
+
+                dead = true;
+            }
+        }
+    }
+}
