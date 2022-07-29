@@ -1,0 +1,36 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+[CreateAssetMenu]
+public class Inventory : ScriptableObject
+{
+    public ItemPlayer currentItem;
+    public List<ItemPlayer> items = new List<ItemPlayer>();
+    //TimerKey just an example
+    public int doorkey;
+    public int timerkey;
+    public int coins;
+    public int bomb;
+
+    public float health;
+    public float armour;
+
+ 
+
+    public void AddItem(ItemPlayer itemToAdd)
+    {
+        if (itemToAdd.timer)
+        {
+            //if it is a key add +1 to the numberofkeys
+            timerkey++;
+        }
+        else
+        {
+            if (!items.Contains(itemToAdd))
+            {
+                items.Add(itemToAdd);
+            }
+        }
+    }
+}
