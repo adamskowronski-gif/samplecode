@@ -1,3 +1,5 @@
+//This is the Base code for all my enemy units. All the individual Enemy types refer to this code.
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
