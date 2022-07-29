@@ -1,0 +1,110 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class ArmourManager : MonoBehaviour
+
+{
+    [Header("Heart UI")]
+    public Image[] armour;
+    public Sprite armourFull;
+    public Sprite armourHalffull;
+    public Sprite armourempty;
+
+    public GameObject armourone;
+    public GameObject armourtwo;
+    public GameObject armourthree;
+
+    [Header("Heart Scriptable Objects")]
+
+    public Inventory inventory;
+
+    public FloatValue ArmourContainers;
+    public FloatValue PlayerCurrentArmour;
+
+    public void Awake()
+    {
+        
+          ArmourContainers.RuntimeValue = inventory.armour;
+      
+    }
+
+
+    public void Start()
+    {
+        PlayerCurrentArmour.RuntimeValue = ArmourContainers.RuntimeValue;
+        //call InitalHearts
+
+        InitalArmour();
+
+    }
+
+public void InitalArmour()
+    {
+        //"for" is a loop. Goes throught the heart containers and sets them to full
+        //This called at the begnning of the scene or when we get a new heart container.
+        for (int r = 0; r < ArmourContainers.RuntimeValue; r++)
+        {
+            //actives the heart object to be seen on screen
+            armour[r].gameObject.SetActive(true);
+            //full heart sprite added
+            armour[r].sprite = armourFull;
+        }
+    }
+    void Update()
+    {
+        if(PlayerCurrentArmour.RuntimeValue == 0)
+        {
+            ArmourContainers.RuntimeValue = 0;
+            armourone.SetActive(false);
+            armourtwo.SetActive(false);
+            armourthree.SetActive(false);
+        }
+        else if (PlayerCurrentArmour.RuntimeValue == 1)
+        {
+            ArmourContainers.RuntimeValue = 1;
+        }
+        else if (PlayerCurrentArmour.RuntimeValue == 2)
+        {
+            ArmourContainers.RuntimeValue = 2;
+        }
+        else if (PlayerCurrentArmour.RuntimeValue == 3)
+        {
+            ArmourContainers.RuntimeValue = 3;
+        }
+    }
+
+    public void UpdateArmour()
+    {
+        InitalArmour();
+
+        // temporary health value = current health value divided by 2. because each heart counts as 2 health
+        float tempArmour = PlayerCurrentArmour.RuntimeValue;
+
+        //loop over all the heart containers 
+        for (int r = 0; r < ArmourContainers.RuntimeValue; r++)
+        {
+            //if i is less than or = to temphealth then display a full heart
+            if (r <= tempArmour - 1)
+            {
+                //full heart
+                armour[r].sprite = armourFull;
+            }
+            // if is i is more than or equal to temp health display empty heart 
+            else if (r >= tempArmour)
+            {
+                //empty heart
+                armour[r].sprite = armourempty;
+
+            }
+
+            else
+            {
+                //halffull heart
+                armour[r].sprite = armourHalffull;
+            }
+        }
+    }
+}
+
