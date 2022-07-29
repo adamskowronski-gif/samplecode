@@ -1,0 +1,629 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using TMPro;
+using UnityEngine.EventSystems;
+
+
+
+public enum BattleState { Start,PlayerTurn, EnemyTurn,Won, Lost}
+public class BattleSytem : MonoBehaviour
+{
+    public BattleState state;
+    public Animator anim;
+
+    public Animator levelmusic;
+
+    public AudioSource enemybeep;
+
+    public GameObject playerPrefab;
+    public GameObject sellsoulanim;
+
+    public GameObject enemyPrefab;
+
+    public Transform playerBattleStattion;
+    public Transform enemyBattleStation;
+
+    public TextMeshProUGUI dialogText;
+
+    public Inventory coins;
+    public Signal coinsignal;
+
+    Unit playerunit;
+    Unit enemyUnit;
+
+    public bool attacked;
+
+    public BattleHud enemyHud;
+    public BattleHud playerHud;
+
+    public GameObject firstbutton;
+    public GameObject nobutton;
+
+    public GameObject pausemenu, optionsmenu;
+    public bool waspaused;
+    public GameObject pausemenufirstbutton, optionsMenuFirstButton;
+
+    public GameObject currentbutton;
+
+    public GameObject restartButton;
+    public GameObject restart;
+
+    public GameObject winbutton;
+    public GameObject winbox;
+
+    public int enemyCycle;
+    public int playercyle;
+
+    public int ButtonBeforePause;
+
+    public int enemyattackcyble;
+
+    public string enemyAttack1;
+    public string enemyAttack2;
+    public string enemyAttack3;
+
+
+    public string enemySpecial1;
+    public string enemySpecial2;
+    public string enemySpecial3;
+
+    public string playerAttack1;
+    public string playerAttack2;
+    public string playerAttack3;
+
+    public string playerspecial1;
+    public string playerspecial2;
+    public string playerspecial3;
+
+    public string empty;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        state = BattleState.Start;
+        StartCoroutine (SetupBattle());
+    }
+
+    public void Update()
+    {
+        if (Input.GetButtonDown("Pause"))
+        {
+            PauseMenuopen();
+
+        }
+
+        if(waspaused == true)
+        {
+            if (!pausemenu.activeInHierarchy)
+            {
+                if (ButtonBeforePause == 1)
+                {
+                    EventSystem.current.SetSelectedGameObject(null);
+                    waspaused = false;
+                }
+                else if (ButtonBeforePause == 2)
+                {
+                    EventSystem.current.SetSelectedGameObject(firstbutton);
+                    waspaused = false;
+                    currentbutton = firstbutton;
+                }
+                else if (ButtonBeforePause == 3)
+                {
+                    EventSystem.current.SetSelectedGameObject(winbutton);
+                    waspaused = false;
+                    currentbutton = winbutton;
+                }
+                else if (ButtonBeforePause == 4)
+                {
+                    EventSystem.current.SetSelectedGameObject(restartButton);
+                    waspaused = false;
+                    currentbutton = restartButton;
+                }
+            }
+         
+        }
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            EventSystem.current.SetSelectedGameObject(currentbutton);
+        }
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            EventSystem.current.SetSelectedGameObject(currentbutton);
+        }
+
+        if (Input.GetMouseButtonDown(2))
+        {
+            EventSystem.current.SetSelectedGameObject(currentbutton);
+        }
+
+        if (optionsMenuFirstButton == optionsMenuFirstButton.activeInHierarchy && Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2))
+
+        {
+            currentbutton = optionsMenuFirstButton;
+            EventSystem.current.SetSelectedGameObject(currentbutton);
+        }
+    }
+
+    public void PauseMenuopen()
+    {
+        if (!pausemenu.activeInHierarchy)
+        {
+            waspaused = true;
+            pausemenu.SetActive(true);
+            Time.timeScale = 0f;
+
+            EventSystem.current.SetSelectedGameObject(null);
+
+            EventSystem.current.SetSelectedGameObject(pausemenufirstbutton);
+            currentbutton = pausemenufirstbutton;
+        }
+        else
+        {
+            pausemenu.SetActive(false);
+            Time.timeScale = 1f;
+        }
+    }
+
+    public void resume()
+    {
+        pausemenu.SetActive(false);
+        Time.timeScale = 1f;
+
+    
+    }
+
+    IEnumerator SetupBattle()
+    {
+        
+        dialogText.text = "";
+       GameObject playerGO = Instantiate(playerPrefab, playerBattleStattion);
+        playerunit = playerGO.GetComponent<Unit>();
+
+        GameObject enemyGo = Instantiate(enemyPrefab, enemyBattleStation);
+        enemyUnit = enemyGo.GetComponent<Unit>();
+        enemyHud.SetHUD(enemyUnit);
+        playerHud.SetHUD(playerunit);
+        yield return new WaitForSeconds(1f);
+
+        dialogText.text = enemyUnit.unitname + " approches...";
+
+  
+
+
+        yield return new WaitForSeconds(3f);
+
+        state = BattleState.PlayerTurn;
+        playerTurn();
+    }
+
+    void playerTurn()
+    {
+        
+        dialogText.text = "Choose an action:";
+        EventSystem.current.SetSelectedGameObject(firstbutton);
+        currentbutton = firstbutton;
+
+        ButtonBeforePause = 2;
+    }
+
+    IEnumerator playerAttack()
+    {
+        if (coins.coins >= 1 && attacked == false)
+        {
+           
+            EventSystem.current.SetSelectedGameObject(null);
+
+            currentbutton = nobutton;
+            bool isDead = enemyUnit.TakeDamage(playerunit.damage);
+            Instantiate(playerunit.attackAnimation, playerunit.attackAnimationSpawn.transform.position, playerunit.attackAnimationSpawn.transform.rotation);
+            attacked = true;
+            enemyHud.SetHP(enemyUnit.currentHP);
+            coins.coins--;
+            coinsignal.Raise();
+            if (playercyle == 1)
+            {
+                playerunit.attack1SOund.Play(0);
+                dialogText.text = playerAttack1;
+                playercyle++;
+                if (playercyle == 4)
+                {
+                    playercyle = 1;
+                }
+            }
+            else if (playercyle == 2)
+            {
+                playerunit.attack1SOund.Play(0);
+                dialogText.text = playerAttack2;
+                playercyle++;
+
+                if (playercyle == 4)
+                {
+                    playercyle = 1;
+                }
+
+            }
+            else if (playercyle == 3)
+            {
+                playerunit.attack1SOund.Play(0);
+                dialogText.text = playerAttack3;
+                playercyle++;
+
+                if (playercyle == 4)
+                {
+                    playercyle = 1;
+                }
+
+            }
+            yield return new WaitForSeconds(3f);
+
+            if (isDead)
+            {
+                state = BattleState.Won;
+                EndBattle();
+            }
+            else
+            {
+                state = BattleState.EnemyTurn;
+                StartCoroutine(EnemyTurn());
+            }
+        }
+        else if (coins.coins == 0)
+        {
+            playerunit.nocoinsound.Play(0);
+            dialogText.text = "I'm out of coins, I need to sell my soul to get more!";
+        }
+
+    }
+
+    IEnumerator playerMagic()
+    {
+        if (coins.coins >= 2 && attacked == false)
+        {
+            EventSystem.current.SetSelectedGameObject(null);
+            currentbutton = nobutton;
+            bool isDead = enemyUnit.TakeDamage(playerunit.damageSpecial);
+            Instantiate(playerunit.specialAnimation, playerunit.specialAnimationSpawn.transform.position, playerunit.specialAnimationSpawn.transform.rotation);
+            attacked = true;
+            enemyHud.SetHP(enemyUnit.currentHP);
+            coins.coins--;
+            coinsignal.Raise();
+            coins.coins--;
+            coinsignal.Raise();
+
+            if (playercyle == 1)
+            {
+                playerunit.attack2SOund.Play(0);
+                dialogText.text = playerspecial1;
+                playercyle++;
+                if (playercyle == 4)
+                {
+                    playercyle = 1;
+                }
+            }
+            else if (playercyle == 2)
+            {
+                playerunit.attack2SOund.Play(0);
+                dialogText.text = playerspecial2;
+                playercyle++;
+
+                if (playercyle == 4)
+                {
+                    playercyle = 1;
+                }
+
+            }
+            else if (playercyle == 3)
+            {
+                playerunit.attack2SOund.Play(0);
+                dialogText.text = playerspecial3;
+                playercyle++;
+
+                if (playercyle == 4)
+                {
+                    playercyle = 1;
+                }
+
+            }
+      
+            yield return new WaitForSeconds(3f);
+
+            if (isDead)
+            {
+                state = BattleState.Won;
+                EndBattle();
+            }
+            else
+            {
+                state = BattleState.EnemyTurn;
+                StartCoroutine(EnemyTurn());
+            }
+        }
+        else if (coins.coins == 0)
+        {
+            playerunit.nocoinsound.Play(0);
+            dialogText.text = "I'm out of coins, I need to sell my soul to get more!";
+        }
+
+    }
+
+    IEnumerator playerHeal()
+    {
+        if (coins.coins >= 2 && attacked == false)
+        {
+            playerunit.healsound.Play(0);
+            EventSystem.current.SetSelectedGameObject(null);
+            currentbutton = nobutton;
+            playerunit.heal(playerunit.healItem);
+            playerHud.SetHP(playerunit.currentHP);
+            attacked = true;
+            coins.coins--;
+            coinsignal.Raise();
+            coins.coins--;
+            coinsignal.Raise();
+            dialogText.text = "Ok that feels better!";
+            yield return new WaitForSeconds(3f);
+            state = BattleState.EnemyTurn;
+            StartCoroutine(EnemyTurn());
+
+            
+        }
+        else if (coins.coins == 0)
+        {
+            playerunit.nocoinsound.Play(0);
+            dialogText.text = "I don't have enough coins to do that!";
+            
+        }
+
+    }
+
+    IEnumerator sellsoul()
+    {
+        if (attacked == false)
+        {
+            playerunit.coinsound.Play(0);
+            sellsoulanim.SetActive(true);
+            EventSystem.current.SetSelectedGameObject(null);
+            currentbutton = nobutton;
+            attacked = true;
+            coins.coins++;
+            coinsignal.Raise();
+            coins.coins++;
+            coinsignal.Raise();
+            coins.coins++;
+            coinsignal.Raise();
+            coins.coins++;
+            coinsignal.Raise();
+            coins.coins++;
+            coinsignal.Raise();
+            dialogText.text = "Ok I've got more coins! I hope that dosn't come back to bite me later!";
+            yield return new WaitForSeconds(3f);
+            sellsoulanim.SetActive(false);
+            state = BattleState.EnemyTurn;
+            StartCoroutine(EnemyTurn());
+        }
+
+        
+       
+
+    }
+
+
+    public void OnAttackButton()
+    {
+        if (state != BattleState.PlayerTurn)
+            return;
+
+        StartCoroutine(playerAttack());
+    }
+
+    public void OnMagicButton()
+    {
+        if (state != BattleState.PlayerTurn)
+            return;
+
+        StartCoroutine(playerMagic());
+    }
+
+    public void OnHealthButton()
+    {
+        if (state != BattleState.PlayerTurn)
+            return;
+
+        StartCoroutine(playerHeal());
+    }
+
+    public void OnSellSoulButton()
+    {
+        if (state != BattleState.PlayerTurn)
+            return;
+
+        StartCoroutine(sellsoul());
+    }
+
+    IEnumerator EnemyTurn()
+    {
+        dialogText.text = empty;
+        anim.SetBool("enemy", true);
+        yield return new WaitForSeconds(1f);
+        if (enemyCycle == 1 || enemyCycle == 2 || enemyCycle == 4 || enemyCycle == 5 || enemyCycle == 7 || enemyCycle == 9)
+        {
+              yield return new WaitForSeconds(1f);
+            ButtonBeforePause = 1;
+
+            if (enemyattackcyble == 1)
+            {
+                enemyUnit.attack1SOund.Play(0);
+                dialogText.text = enemyAttack1;
+                enemyattackcyble++;
+                if (enemyattackcyble == 4)
+                {
+                    enemyattackcyble = 1;
+                }
+            }
+            else if (enemyattackcyble == 2)
+            {
+                enemyUnit.attack1SOund.Play(0);
+                dialogText.text = enemyAttack2;
+                enemyattackcyble++;
+                if (enemyattackcyble == 4)
+                {
+                    enemyattackcyble = 1;
+                }
+            }
+            else if (enemyattackcyble == 3)
+            {
+                enemyUnit.attack1SOund.Play(0);
+                dialogText.text = enemyAttack3;
+                enemyattackcyble++;
+                if (enemyattackcyble == 4)
+                {
+                    enemyattackcyble = 1;
+                }
+            }
+            Instantiate(enemyUnit.attackAnimation, enemyUnit.attackAnimation.transform.position, enemyUnit.attackAnimation.transform.rotation);
+            yield return new WaitForSeconds(1f);
+            bool isDead = playerunit.TakeDamage(enemyUnit.damage);
+
+            playerHud.SetHP(playerunit.currentHP);
+            if(enemyCycle == 9)
+            {
+                enemyCycle = 1;
+            }
+            else
+            {
+                enemyCycle++;
+            }
+            yield return new WaitForSeconds(3f);
+
+            if (isDead)
+            {
+                dialogText.text = empty;
+                anim.SetBool("enemy", false);
+                yield return new WaitForSeconds(1f);
+                state = BattleState.Lost;
+                EndBattle();
+            }
+            else
+            {
+                dialogText.text = empty;
+                anim.SetBool("enemy", false);
+                yield return new WaitForSeconds(1f);
+                state = BattleState.PlayerTurn;
+                attacked = false;
+                playerTurn();
+            }
+        }
+
+       else if (enemyCycle == 3 || enemyCycle == 6 || enemyCycle == 8 )
+        {
+            yield return new WaitForSeconds(1f);
+            if (enemyattackcyble == 1)
+            {
+                enemyUnit.attack2SOund.Play(0);
+                dialogText.text = enemySpecial1;
+                enemyattackcyble++;
+                if (enemyattackcyble == 4)
+                {
+                    enemyattackcyble = 1;
+                }
+            }
+            else if (enemyattackcyble == 2)
+            {
+                enemyUnit.attack2SOund.Play(0);
+                dialogText.text = enemySpecial2;
+                enemyattackcyble++;
+                if (enemyattackcyble == 4)
+                {
+                    enemyattackcyble = 1;
+                }
+            }
+            else if (enemyattackcyble == 3)
+            {
+                enemyUnit.attack2SOund.Play(0);
+                dialogText.text = enemySpecial3;
+                enemyattackcyble++;
+                if (enemyattackcyble == 4)
+                {
+                    enemyattackcyble = 1;
+                }
+            }
+            Instantiate(enemyUnit.specialAnimation);
+            yield return new WaitForSeconds(1f);
+            bool isDead = playerunit.TakeDamage(enemyUnit.damageSpecial);
+
+            playerHud.SetHP(playerunit.currentHP);
+            if (enemyCycle == 9)
+            {
+                enemyCycle = 1;
+            }
+            else
+            {
+                enemyCycle++;
+            }
+            yield return new WaitForSeconds(3f);
+
+            if (isDead)
+            {
+                dialogText.text = empty;
+                anim.SetBool("enemy", false);
+                yield return new WaitForSeconds(1f);
+                state = BattleState.Lost;
+              
+                EndBattle();
+            }
+            else
+            {
+                dialogText.text = empty;
+                anim.SetBool("enemy", false);
+                yield return new WaitForSeconds(1f);
+                state = BattleState.PlayerTurn;
+                attacked = false;
+              
+                playerTurn();
+                
+            }
+        }
+    }
+
+    void EndBattle()
+    {
+    if(state == BattleState.Won)
+        {
+            levelmusic.SetBool("fade", true);
+
+            enemyUnit.deathSound.Play(0);
+            dialogText.text = "I think it's dead .... wait something weird is happening ...";
+            StartCoroutine(wonbattle());
+        }
+    else if (state == BattleState.Lost)
+        {
+            dialogText.text = "That didn't go to plan";
+            StartCoroutine(lostbattle());
+        }
+    }
+
+    IEnumerator wonbattle()
+    {
+        enemybeep.Play(0);
+        enemyUnit.anim.SetBool("dead", true);
+        yield return new WaitForSeconds(3f);
+        dialogText.text = "It looks like it's going to explode!";
+        yield return new WaitForSeconds(2f);
+        winbox.SetActive(true);
+        EventSystem.current.SetSelectedGameObject(winbutton);
+        currentbutton = winbutton;
+    }
+
+    IEnumerator lostbattle()
+    {
+        playerunit.deathSound.Play(0);
+        playerunit.anim.SetBool("dead", true);
+        yield return new WaitForSeconds(3f);
+        restart.SetActive(true);
+        EventSystem.current.SetSelectedGameObject(restartButton);
+        currentbutton = restartButton;
+    }
+}
