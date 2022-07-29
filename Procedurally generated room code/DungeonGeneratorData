@@ -1,0 +1,13 @@
+using UnityEngine;
+
+
+[CreateAssetMenu(fileName = "DungeoGenerationData.asset", menuName = "DungeonGenerationData/Dungeon Data")]
+public class DungeonGeneratorData : ScriptableObject
+{
+
+    public int numberOfCrawlers;
+
+    public int iterationMin;
+
+    public int iterationMax;
+}
