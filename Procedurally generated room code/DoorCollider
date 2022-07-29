@@ -1,0 +1,42 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class DoorCollider : MonoBehaviour
+{
+    public GameObject left;
+    public GameObject right;
+    public GameObject up;
+    public GameObject down;
+
+    public BoxCollider2D boxUp;
+    public BoxCollider2D boxDown;
+    public BoxCollider2D boxLeft;
+    public BoxCollider2D boxRight;
+
+    public bool leftoff;
+    public bool rightoff;
+    public bool upoff;
+    public bool downoff;
+
+    // Update is called once per frame
+    void Update()
+    {
+      if (leftoff == true)
+        {
+            boxLeft.enabled = true;
+        }
+        if (rightoff == true)
+        {
+            boxRight.enabled = true;
+        }
+        if (upoff == true)
+        {
+            boxUp.enabled = true;
+        }
+        if (downoff == true)
+        {
+            boxDown.enabled = true;
+        }
+    }
+}
