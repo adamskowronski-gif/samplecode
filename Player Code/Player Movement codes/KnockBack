@@ -1,0 +1,143 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using Assets.HeroEditor4D.Common.CharacterScripts;
+
+public class KnockBack : MonoBehaviour
+{
+    public float thrust;
+    public float knockTime;
+    public float damage;
+    public bool playerbullet = false;
+    public PlayerMovement player;
+    public AudioSource audiohit;
+
+    public bool firedamageOn;
+
+    public CharacterState characterState;
+
+
+    public void Update()
+    {
+        player = FindObjectOfType<PlayerMovement>();
+   
+    }
+    //Has other ridgid body entered trigger area
+    public void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("breakable")
+            && this.gameObject.CompareTag("Player"))
+        {
+            other.GetComponent<BreakableItem>().Smash();
+        }
+        
+        //if the tag is enemey or player before the rest of this method.
+        else if (other.gameObject.CompareTag("enemy") ||
+            other.gameObject.CompareTag("Player"))
+        {
+
+
+            //declaring the rigidbody.
+            Rigidbody2D hit = other.GetComponent<Rigidbody2D>();
+            //if they have a ridgidbody
+            if (hit != null)
+            {
+                if (other.gameObject.CompareTag("enemy"))
+                {
+                    if (other.GetComponent<EnemyBaseCode>() !=null)
+                    {
+                        if (other.GetComponent<EnemyBaseCode>().currentState != EnemyState.Spawn)
+                            {
+                            if (other.gameObject.CompareTag("enemy") && gameObject != gameObject.CompareTag("enemy"))
+
+                            {
+                                hit.GetComponent<EnemyBaseCode>().currentState = EnemyState.stagger;
+                                other.GetComponent<EnemyBaseCode>().Knock(hit, knockTime, damage);
+
+                           
+                                if (audiohit != null)
+                                {
+                                    audiohit.Play(0);
+                                }
+                                else
+                                {
+                                    return;
+                                }
+
+                            }
+                        }
+                    }
+                    else if (other.GetComponent<EnemyBaseCode>() == null)
+                    {
+                        return;
+                    }
+                
+                }
+                else if (other.gameObject.CompareTag("Player"))
+                {
+                    if (other.GetComponent<PlayerMovement>().dead == false)
+                    {
+
+
+
+                        if (other.GetComponent<PlayerMovement>().characterState
+                        != CharacterState.Hit)
+                        {
+
+                            other.GetComponent<PlayerMovement>().Knock(hit, knockTime, damage);
+
+                            //find the difference in the x and y vecotrs of the two ridgid bodies
+                            Vector2 difference = hit.transform.position - transform.position;
+                            //to nomralise a vector you change the equivilant diffrence to a scale of 1.
+                            //eg. if hit.trandform.position was 2 and transform.position was 1
+                            //normalising would change it to 1 and 0.5.
+                            //the diffence = the normiased differnece times by the thrust float set in unity
+                            difference = difference.normalized * thrust;
+                            //adding force
+                            hit.AddForce(difference, ForceMode2D.Impulse);
+
+                        }
+
+                        else if (other.GetComponent<PlayerMovement>().characterState
+                        == CharacterState.Hit)
+                        {
+                            return;
+                        }
+
+                        else if (other.gameObject.CompareTag("Player") && playerbullet == true)
+                        {
+                            player.anim.IsAction = true;
+
+                        }
+
+                        else if (other.gameObject.CompareTag("Player") && this.gameObject.CompareTag("Trap") && other.GetComponent<PlayerMovement>().characterState
+                        != CharacterState.Hit && firedamageOn == false)
+                        {
+                            StartCoroutine(fireOn());
+                            player.characterState = CharacterState.Hit;
+                            other.GetComponent<PlayerMovement>().Knock(hit, knockTime, damage);
+                        }
+                        else if (other.GetComponent<PlayerMovement>().characterState
+                        == CharacterState.Hit) { return; }
+                    }
+               
+                }
+
+            }
+
+        }
+
+    }
+    IEnumerator fireOn()
+    {
+        yield return new WaitForSeconds(.01f);
+        firedamageOn = true;
+        yield return new WaitForSeconds(4f);
+        firedamageOn = false;
+   
+    }
+
+}
+        
+    
+    
