@@ -42,7 +42,7 @@ public class PlayerMovement : MonoBehaviour
     public Signal playerArmourSignal;
     public Signal bombsignal;
 
-    public PlayerShootNewOneD fire;
+    public PlayerShooting fire;
 
     public AudioSource Sword;
 
