@@ -1,0 +1,51 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+
+public class FullUIReset : MonoBehaviour
+{
+
+    public Inventory reset;
+    public FloatValue ArmourContainers;
+    public FloatValue PlayerArmour;
+
+    public FloatValue playerhealth;
+    public FloatValue HealthContainers;
+
+    public FloatValue TwoDPlayerlives;
+    public FloatValue TwoDHeartContainers;
+
+
+
+
+    public void Start()
+    {
+
+
+        reset.doorkey = 0;
+        reset.coins = 0;
+        reset.bomb = 0;
+        reset.health = 3;
+        reset.armour = 0;
+
+        HealthContainers.RuntimeValue = 3;
+        HealthContainers.initialvalue = 3;
+        playerhealth.RuntimeValue = 6;
+        playerhealth.initialvalue = 6;
+
+        TwoDPlayerlives.RuntimeValue = 3;
+        TwoDPlayerlives.initialvalue = 3;
+        TwoDHeartContainers.RuntimeValue = 3;
+        TwoDHeartContainers.initialvalue = 3;
+
+
+        ArmourContainers.RuntimeValue = 0;
+        ArmourContainers.initialvalue = 0;
+        PlayerArmour.RuntimeValue = 0;
+        PlayerArmour.initialvalue = 0;
+
+
+    }
+
+}
