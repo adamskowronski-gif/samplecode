@@ -1,0 +1,224 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.EventSystems;
+
+public class EventSystemController : MonoBehaviour
+{
+    public GameObject dialogbox, inventoryMenu, pausemenu, optionmenu;
+
+    public GameObject dialogboxfirst, inventoryMenuFirst, pausemenufirstbutton, optionsMenuFirstButton;
+
+    public bool pauseWasOpen;
+
+    public GameObject loadingscreen;
+
+    public GameObject currentbutton;
+
+
+
+    public void Start()
+        {
+            Time.timeScale = 1f;
+        }
+
+
+
+    public void Update()
+    {
+    
+       
+
+        if (Input.GetButtonDown("Pause") && loadingscreen != loadingscreen.activeInHierarchy)
+        {
+            PauseMenuopen();
+        }
+
+        if (dialogboxfirst == null && pausemenu != pausemenu.activeInHierarchy )
+        {
+            dialogSearch();
+
+        }
+        else if (dialogboxfirst == null && pausemenu == pausemenu.activeInHierarchy )
+        {
+
+            currentbutton = pausemenufirstbutton;
+        }
+
+        else if (dialogboxfirst != dialogboxfirst.activeInHierarchy && pausemenu != pausemenu.activeInHierarchy)
+        {
+
+            dialogSearch();
+        }
+        else if (dialogboxfirst != dialogboxfirst.activeInHierarchy && pausemenu == pausemenu.activeInHierarchy)
+        {
+
+            currentbutton = pausemenufirstbutton;
+        }
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            EventSystem.current.SetSelectedGameObject(currentbutton);
+           
+        }
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            EventSystem.current.SetSelectedGameObject(currentbutton);
+        }
+
+        if (Input.GetMouseButtonDown(2))
+        {
+            EventSystem.current.SetSelectedGameObject(currentbutton);
+        }
+
+
+
+
+        if (optionsMenuFirstButton.activeInHierarchy && Input.GetMouseButtonDown(0))
+
+        {
+            currentbutton = optionsMenuFirstButton;
+            EventSystem.current.SetSelectedGameObject(currentbutton);
+        }
+        if (optionsMenuFirstButton.activeInHierarchy &&  Input.GetMouseButtonDown(1) )
+
+        {
+            currentbutton = optionsMenuFirstButton;
+            EventSystem.current.SetSelectedGameObject(currentbutton);
+        }
+        if (optionsMenuFirstButton.activeInHierarchy && Input.GetMouseButtonDown(2))
+
+        {
+            currentbutton = optionsMenuFirstButton;
+            EventSystem.current.SetSelectedGameObject(currentbutton);
+        }
+
+
+
+    }
+
+    public void PauseMenuopen()
+    {
+        if(pausemenu.activeInHierarchy == false)
+        {
+            currentbutton = pausemenufirstbutton;
+            pauseWasOpen = true;
+            pausemenu.SetActive(true);
+            Time.timeScale = 0f;
+
+            EventSystem.current.SetSelectedGameObject(null);
+
+            EventSystem.current.SetSelectedGameObject(pausemenufirstbutton);
+
+           
+        }
+        else
+        {
+            optionmenu.SetActive(false);
+            pausemenu.SetActive(false);
+            Time.timeScale = 1f;
+           
+            if (dialogboxfirst == null)
+            {
+                EventSystem.current.SetSelectedGameObject(null);
+            }
+
+            else if (dialogboxfirst.activeInHierarchy)
+            {
+                EventSystem.current.SetSelectedGameObject(dialogboxfirst);
+                currentbutton = dialogboxfirst;
+            }
+
+        }
+    }
+
+    public void resume()
+    {
+        pausemenu.SetActive(false);
+        Time.timeScale = 1f;
+
+        if (dialogboxfirst != dialogboxfirst.activeInHierarchy)
+        {
+            EventSystem.current.SetSelectedGameObject(null);
+        }
+
+        else if (dialogboxfirst.activeInHierarchy)
+        {
+            EventSystem.current.SetSelectedGameObject(dialogboxfirst);
+            currentbutton = dialogboxfirst;
+        }
+    }
+
+
+
+    public void OptionsMenuOpen()
+    {
+     
+
+            EventSystem.current.SetSelectedGameObject(null);
+
+            EventSystem.current.SetSelectedGameObject(optionsMenuFirstButton);
+        currentbutton = optionsMenuFirstButton;
+
+    }
+
+
+    public void InventoryOpen()
+    {
+        if (!inventoryMenu.activeInHierarchy)
+        {
+            inventoryMenu.SetActive(true);
+            EventSystem.current.SetSelectedGameObject(null);
+
+            EventSystem.current.SetSelectedGameObject(inventoryMenuFirst);
+            currentbutton = inventoryMenuFirst;
+        }
+        else
+        {
+            inventoryMenu.SetActive(false);
+          
+        }
+    }
+
+
+    public void dialogOpen()
+    {
+        EventSystem.current.SetSelectedGameObject(null);
+
+        EventSystem.current.SetSelectedGameObject(dialogboxfirst);
+        currentbutton = dialogboxfirst;
+    }
+
+    public void dialogSearch()
+    {
+
+       if(dialogbox = null)
+        {
+            return;
+
+        }
+        else
+        {
+            dialogbox = GameObject.FindGameObjectWithTag("DialogBox");
+        }
+
+
+       if (dialogboxfirst = null)
+        {
+            return;
+        }
+
+       else
+        {
+            dialogboxfirst = GameObject.FindGameObjectWithTag("DialogButton");
+            EventSystem.current.SetSelectedGameObject(dialogboxfirst);
+            currentbutton = dialogboxfirst;
+
+
+        }
+
+
+
+    }
+}
