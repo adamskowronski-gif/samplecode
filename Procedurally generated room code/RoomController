@@ -1,0 +1,273 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using System.Linq;
+
+public class RoomInfo
+{
+    public string name;
+
+    public float X;
+
+    public float Y;
+
+   
+}
+
+
+public class RoomController : MonoBehaviour
+{
+    public static RoomController instance;
+
+    string currentWorldName;
+
+
+    RoomInfo currentLoadRoomData;
+
+    public Room currentRoom;
+
+    Queue<RoomInfo> loadRoomQueue = new Queue<RoomInfo>();
+
+    public List<Room> loadedRooms = new List<Room>();
+
+    bool isLoadingRoom = false;
+
+    bool spawnedBossRoom = false;
+
+    bool spawnedStoryRoom = false;
+
+    bool spawnedKeyRoom = false;
+
+   public bool updayedRoom = false;
+
+    bool removedoors = false;
+
+    public bool genroom;
+
+    public  void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+  public  void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name == "BasementOneLevel")
+        {
+            currentWorldName = "Basement";
+        }
+        else if (scene.name == "BasementTwoLevel")
+        {
+            currentWorldName = "BasementTwo";
+        }
+        else if (scene.name == "SewerLevel")
+        {
+            currentWorldName = "Sewer";
+        }
+        else if (scene.name == "PoliceProOne")
+        {
+            currentWorldName = "PoliceOne";
+        }
+        else if (scene.name == "PoliceProTwo")
+        {
+            currentWorldName = "PoliceTwo";
+        }
+        else if (scene.name == "PoliceProThree")
+        {
+            currentWorldName = "PoliceThree";
+        }
+        else if (scene.name == "PoliceProFour")
+        {
+            currentWorldName = "PoliceFour";
+        }
+    }
+
+        public void Awake()
+    {
+        instance = this;
+    }
+
+  public  void Start()
+    {
+       
+    }
+
+   public void Update()
+    {
+        updateRoomQueue();
+
+        if (genroom == false)
+        {
+            currentRoom = null;
+            return;
+        }
+    }
+
+
+    void updateRoomQueue()
+    {
+        if (isLoadingRoom)
+        {
+            return;
+        }
+
+        if (loadRoomQueue.Count == 0)
+        {
+            if (!spawnedBossRoom && !spawnedStoryRoom && !spawnedKeyRoom)
+            {
+                StartCoroutine(SpawnedBossRoom());
+            }
+            else if (spawnedBossRoom && spawnedStoryRoom && spawnedKeyRoom && !updayedRoom && removedoors == true)
+            {
+                foreach (Room room in loadedRooms)
+                {
+                    room.RemoveUnconnectedDoors();
+                }
+                updayedRoom = true;
+            }
+            return;
+
+
+        }
+
+
+        else
+        {
+            currentLoadRoomData = loadRoomQueue.Dequeue();
+            isLoadingRoom = true;
+            StartCoroutine(LoadRoomRoutine(currentLoadRoomData));
+        }
+    }
+
+    IEnumerator SpawnedBossRoom()
+    {
+        spawnedBossRoom = true;
+        spawnedStoryRoom = true;
+        spawnedKeyRoom = true;
+
+        yield return new WaitForSeconds(0.5f);
+        if (loadRoomQueue.Count == 0 && genroom == true)
+        {
+            Room bossRoom = loadedRooms[loadedRooms.Count - 1];
+            Room storyRoom = loadedRooms[loadedRooms.Count - 2];
+            Room keyRoom = loadedRooms[loadedRooms.Count - 3];
+
+            Room tempRoom = new Room(bossRoom.X, bossRoom.Y);
+            Room tempStoryRoom = new Room(storyRoom.X, storyRoom.Y);
+            Room tempKeyRoom = new Room(keyRoom.X, keyRoom.Y);
+
+
+            Destroy(bossRoom.gameObject);
+            Destroy(storyRoom.gameObject);
+            Destroy(keyRoom.gameObject);
+
+            var roomToRemove = loadedRooms.Single(r => r.X == tempRoom.X && r.Y == tempRoom.Y);
+            var roomToRemoveS = loadedRooms.Single(r => r.X == tempStoryRoom.X && r.Y == tempStoryRoom.Y);
+            var roomToRemoveSs = loadedRooms.Single(r => r.X == tempKeyRoom.X && r.Y == tempKeyRoom.Y);
+
+            loadedRooms.Remove(roomToRemove);
+            loadedRooms.Remove(roomToRemoveS);
+            loadedRooms.Remove(roomToRemoveSs);
+
+            removedoors = true;
+
+
+            LoadRoom("End", tempRoom.X, tempRoom.Y);
+            LoadRoom("Story", storyRoom.X, storyRoom.Y);
+            LoadRoom("Key", keyRoom.X, keyRoom.Y);
+
+
+
+        }
+    }
+
+    public void LoadRoom (string name, float x, float y)
+    {
+        if(DoesRoomExist(x,y))
+        {
+            return;
+        }
+
+        RoomInfo newRoomData = new RoomInfo();
+        newRoomData.name = name;
+        newRoomData.X = x;
+        newRoomData.Y = y;
+
+        loadRoomQueue.Enqueue(newRoomData);
+
+
+    }
+
+    IEnumerator LoadRoomRoutine(RoomInfo info)
+    {
+        string roomName = currentWorldName + info.name;
+
+        AsyncOperation loadRoom = SceneManager.LoadSceneAsync(roomName, LoadSceneMode.Additive);
+
+        while (loadRoom.isDone == false)
+        {
+            yield return null;
+        }
+    }
+
+
+    public void RegisterRoom(Room room)
+    {
+        if (!DoesRoomExist(currentLoadRoomData.X, currentLoadRoomData.Y))
+        {
+            room.transform.position = new Vector3(
+                currentLoadRoomData.X * room.width,
+                currentLoadRoomData.Y * room.height, 0);
+
+
+            room.X = currentLoadRoomData.X;
+            room.Y = currentLoadRoomData.Y;
+            room.name = currentWorldName + "-" + currentLoadRoomData.name + " " + room.X + ", " + room.Y;
+            room.transform.parent = transform;
+
+            isLoadingRoom = false;
+
+            if (loadedRooms.Count == 0)
+            {
+                CameraController.instance.currRoom = room;
+            }
+
+            loadedRooms.Add(room);
+       
+        }
+        else
+        {
+            Destroy(room.gameObject);
+            isLoadingRoom = false;
+        }
+    }
+
+
+
+
+    public bool DoesRoomExist (float x, float y)
+
+    {
+
+        return loadedRooms.Find(item => item.X == x && item.Y == y) != null; 
+    }
+
+
+    public Room FindRoom(float x, float y)
+
+    {
+
+        return loadedRooms.Find(item => item.X == x && item.Y == y);
+    }
+
+
+    public void OnPlayerEnterRoom(Room room)
+    {
+        CameraController.instance.currRoom = room;
+    }
+}
