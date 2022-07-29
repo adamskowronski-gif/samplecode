@@ -1,0 +1,28 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class MeleePickUp : MonoBehaviour
+{
+    public PlayerWeaponInventory weaponinventory;
+    public PlayerWeaponMeleeItem weapon;
+    public Signal meleePickUP;
+
+    //Raise the powerup signal to put the text on the coin display
+
+
+    public void OnTriggerEnter2D(Collider2D other)
+    {    //When Player is in the trigger and not another ridgidbody
+        if (other.CompareTag("Player") && !other.isTrigger)
+        {
+            weaponinventory.weaponpickup = true;
+            //when player is in the trigger add 1 coin
+            weaponinventory.AddItem(weapon);
+            weaponinventory.currentMelee = weapon;
+            //Raise the powerup signal again
+            meleePickUP.Raise();
+
+            Destroy(this.gameObject);
+        }
+    }
+}
