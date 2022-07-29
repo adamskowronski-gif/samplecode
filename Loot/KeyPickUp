@@ -1,0 +1,29 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class KeyPickUp : PowerUp
+{
+    public Inventory playerInventory;
+    public GameObject audioon;
+    //Raise the powerup signal to put the text on the coin display
+    void Start()
+    {
+        powerupSignal.Raise();
+    }
+
+
+    public void OnTriggerEnter2D(Collider2D other)
+    {    //When Player is in the trigger and not another ridgidbody
+        if (other.CompareTag("player1") && !other.isTrigger)
+        {
+            //when player is in the trigger add 1 coin
+            playerInventory.doorkey += 1;
+            //Raise the powerup signal again
+            powerupSignal.Raise();
+            Instantiate(audioon, transform.position, Quaternion.identity);
+            //destory the coin
+            Destroy(this.gameObject);
+        }
+    }
+}
