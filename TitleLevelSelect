@@ -1,0 +1,141 @@
+//At the main menu you can input a code that you receive after your character dies. This will let you load in at that level
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using TMPro;
+using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
+
+public class TitleLevelSelect : MonoBehaviour
+{
+    public TMP_InputField input;
+    public GameObject fadeout;
+    public int select;
+   public Animator animator;
+    public TitleEventSystem titleevent;
+    public GameObject levelsel;
+    public GameObject nobutton;
+
+    public AudioSource titleAudio;
+    public AudioSource errorAudio;
+    public AudioSource playAudio;
+
+    public bool off;
+    private void Start()
+    {
+        select = 0;
+    }
+
+
+   
+  
+    public void Update()
+    {
+        if ((Input.GetButton("enter")))
+        {
+     
+            if (input.text == "9723")
+        {//basement 1
+            select = 1;
+            StartCoroutine(levelselect());  
+        }
+        else if (input.text == "1114")
+        {//fishboss
+            select = 2;
+            StartCoroutine(levelselect());
+        }
+
+        else if (input.text == "6666")
+        {//basement 2
+            select = 3;
+            StartCoroutine(levelselect());
+        }
+        else if (input.text == "8456")
+        {//2d
+            select = 4;
+            StartCoroutine(levelselect());
+        }
+        else if (input.text == "2929")
+        {//outside
+            select = 5;
+            StartCoroutine(levelselect());
+        }
+        else if (input.text == "0101")
+        {//cabin 3
+            select = 6;
+            StartCoroutine(levelselect());
+        }
+
+        else
+        {
+            select = 7;
+            //Error
+            StartCoroutine(levelselect());
+        }
+    }
+        else if ((Input.GetButton("Cancel")) && off == false)
+        {
+
+            Debug.Log("off");
+            titleevent.searching = true;
+            levelsel.SetActive(false);
+        }
+}
+IEnumerator levelselect()
+    {
+        if (select <= 6)
+        {
+            titleAudio.Stop();
+            playAudio.Play(0);
+            off = true;
+            titleevent.nobuttonon();
+            fadeout.SetActive(true);
+            if (select == 1)
+            {
+                yield return new WaitForSeconds(3f);
+                SceneManager.LoadScene(4);
+            }
+            else if (select == 2)
+            {
+                yield return new WaitForSeconds(3f);
+                SceneManager.LoadScene(5);
+            }
+            else if (select == 3)
+            {
+                yield return new WaitForSeconds(3f);
+                SceneManager.LoadScene(7);
+            }
+            else if (select == 4)
+            {
+                yield return new WaitForSeconds(3f);
+                SceneManager.LoadScene(8);
+            }
+            else if (select == 5)
+            {
+
+                yield return new WaitForSeconds(3f);
+                SceneManager.LoadScene(10);
+            }
+            else if (select == 6)
+            {
+
+                yield return new WaitForSeconds(3f);
+                SceneManager.LoadScene(13);
+            }
+        }
+        else if (select == 7)
+        {
+            errorAudio.Play(0);
+            select = 0;
+            animator.SetBool("error", true);
+            yield return new WaitForSeconds(.5f);
+            animator.SetBool("error", false);
+
+        }
+
+
+    }
+
+
+}
