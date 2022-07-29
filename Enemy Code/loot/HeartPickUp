@@ -1,0 +1,41 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class HeartPickUp : PowerUp
+{
+    [Header("Player Health Stats")]
+    public FloatValue playerHealth;
+    public FloatValue heartContainers;
+    public float amountToIncrease;
+    public GameObject audioon;
+
+    //On trigger collider for playing picking up hearts
+    public void OnTriggerEnter2D(Collider2D other)
+    {
+        //When Player is in the trigger and not another ridgidbody
+        if (other.CompareTag("player1") && !other.isTrigger)
+        {
+            
+            if (playerHealth.RuntimeValue < 9)
+            {
+                playerHealth.RuntimeValue += amountToIncrease;
+
+            }
+            else if (playerHealth.RuntimeValue == 9)
+            {
+                playerHealth.RuntimeValue++;
+            }
+            else if (playerHealth.RuntimeValue >= 10)
+            {
+                
+            }
+            //If player goes is in heart collider, the signal is raised to the
+            //"Health Signal" scriptable object. This will increase the hearts and
+            //destroy the heart object
+            Instantiate(audioon, transform.position, Quaternion.identity);
+            powerupSignal.Raise();
+            Destroy(this.gameObject);
+        }
+    }
+}
