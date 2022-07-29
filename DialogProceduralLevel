@@ -1,3 +1,5 @@
+//Dialog Manager for procedurally generated level
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
