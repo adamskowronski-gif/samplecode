@@ -1,0 +1,19 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+[CreateAssetMenu]
+public class PlayerWeaponMeleeItem : ScriptableObject
+{
+    [Header("Item Details")]
+    public Sprite itemSprite;
+    public string itemDescription;
+
+
+
+    [Header("Weapons")]
+    public bool baseballBatitem;
+    public bool knifeitem;
+    public bool bloodSaberitem;
+}
+
